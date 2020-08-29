@@ -4,9 +4,11 @@ import {
   Route
 } from "react-router-dom";
 
-import Home from './components/pages/home';
+
 import Layout from './components/layout/layout';
+import Home from './components/pages/home';
 import Categories from './components/pages/categories';
+import Testimonials from './components/pages/testimonials';
 
 export default () => {
   return (
@@ -21,6 +23,12 @@ export default () => {
       <Route path="/categories">
         <Layout>
           <Categories />
+        </Layout>
+      </Route>
+
+      <Route path="/testimonial">
+        <Layout>
+          <Testimonials />
         </Layout>
       </Route>
 
