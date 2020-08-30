@@ -53,10 +53,12 @@ class Login extends React.Component {
                     <Logo />
                     <span>Sign in</span>
                     <div>
+                        <label>Email</label>
                         <input type="email" name="email" onChange={(ev) => {this.onEmailChange(ev)}} value={this.state.email} />
                         <span className="error">{this.state.emailError}</span>
                     </div>
                     <div>
+                        <label>Password</label>
                         <input type={this.state.passwordType}  name="password" onChange={(ev) => {this.onPasswordChange(ev)}} value={this.state.password} />
                         <span onMouseEnter={() => {this.setState({passwordType: "text"})}} onMouseLeave={() => {this.setState({passwordType: "password"})}}>View password</span>
                         <span className="error">{this.state.passwordError}</span>
