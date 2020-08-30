@@ -9,6 +9,8 @@ import Layout from './components/layout/layout';
 import Home from './components/pages/home';
 import Categories from './components/pages/categories';
 import Testimonials from './components/pages/testimonials';
+import Login from './components/pages/login';
+import Register from './components/pages/register';
 
 export default () => {
   return (
@@ -30,6 +32,14 @@ export default () => {
         <Layout>
           <Testimonials />
         </Layout>
+      </Route>
+
+      <Route path="/login">
+          <Login />
+      </Route>
+
+      <Route path="/register">
+          <Register />
       </Route>
 
     </Switch>

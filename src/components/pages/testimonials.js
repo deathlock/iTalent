@@ -65,7 +65,7 @@ class Testimonials extends React.Component {
                     <div>
                         {
                             tData.map((el, key) => {
-                                return <span className={this.state.active == key ? "active" : ""} key={key} onClick={() => this.changeTestimonial(key)} onMouseOver={() => this.changeTestimonial(key)}>{el.image}</span>
+                                return <span className={this.state.active === key ? "active" : ""} key={key} onClick={() => this.changeTestimonial(key)} onMouseOver={() => this.changeTestimonial(key)}>{el.image}</span>
                             })
                         }
                     </div>

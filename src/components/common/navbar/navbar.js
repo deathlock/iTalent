@@ -8,8 +8,8 @@ class Navbar extends React.Component {
                 <LinkItems href="how-it-works" text="How it works" />
                 <LinkItems href="soltuions" text="Solutions" />
                 <LinkItems href="legal" text="legal" />
-                <LinkItems href="signin" text="signin" />
-                <LinkItems href="register" text="register" />
+                <LinkItems href="login" useLink={true} text="signin" />
+                <LinkItems href="register" useLink={true} text="register" />
             </div>
         );
     }

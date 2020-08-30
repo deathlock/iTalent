@@ -26,7 +26,7 @@ class Navigator extends React.Component {
                             {this.state.links.map((el, key) => {
                                 return (
                                     <li key={key} 
-                                        className={this.state.active == key ? "active" : ""} 
+                                        className={this.state.active === key ? "active" : ""} 
                                         onClick={() => this.props.updateActiveLink(key)}><Link to={el}>{el}</Link></li>
                                 );
                             })}
