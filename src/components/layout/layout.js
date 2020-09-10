@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import Header from '../common/header/header';
 import Footer from '../common/footer/footer';
 import Navigator from '../atoms/navigator/navigator';
@@ -12,25 +13,52 @@ const navigatorArray = [
 
 
 class Layout extends React.Component {
+    
     state = {
-        activeLink: 0
+        activeLink: navigatorArray.findIndex(el => el === this.props.location.pathname)
     }
 
     updateActiveLink = (key) => {
         this.setState({ activeLink: key });
     }
 
-    render() {
-        return(
-            <React.Fragment>
-                <Header />
-                    {this.props.children}
-                    <Navigator active={this.state.activeLink} links={navigatorArray} updateActiveLink={(key) => this.updateActiveLink(key)} />
-                <Footer />
-            </React.Fragment>
-            );
+    componentDidMount() {
+        if(this.state.activeLink !== navigatorArray.findIndex(el => el === this.props.location.pathname)) {
+            this.setState({
+                activeLink: navigatorArray.findIndex(el => el === this.props.location.pathname)
+            });
+        }
     }
-    
+
+    componentDidUpdate() {
+        if(this.state.activeLink !== navigatorArray.findIndex(el => el === this.props.location.pathname)) {
+            this.setState({
+                activeLink: navigatorArray.findIndex(el => el === this.props.location.pathname)
+            });
+        }
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+            <div className={`container-fluid ${this.state.activeLink !== 1 && this.state.activeLink !== -1 && this.state.activeLink !== 3 ? "header-background-color": ''}`} style={{ position: 'relative' }}>
+                <div className="container">
+                    <Header />
+                    <section className="section-1">
+                        {this.props.hasNavigator && <Navigator active={this.state.activeLink} links={navigatorArray} updateActiveLink={(key) => this.updateActiveLink(key)} />}
+                        {this.props.children}
+                    </section>
+                </div>
+            </div>
+            <Footer hasBackground={this.state.activeLink === 1 || this.state.activeLink === 3  || this.state.activeLink === -1 ? false : true} />
+            </React.Fragment>
+        );
+    }
+
 }
 
-export default Layout;
+Layout.defaultProps = {
+    hasNavigator: true
+}
+
+export default withRouter(Layout);

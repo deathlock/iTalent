@@ -1,23 +1,31 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Logo from '../common/logo/logo';
 import { validateEmail, validatePhone } from '../../utils/helpers';
+import { API_URL, API_HEADERS } from '../../utils/api';
+import axios from 'axios';
+import localforage from 'localforage';
+import eyeImage from '../../assets/images/eye.png';
 
 class Register extends React.Component {
     state = {
         email: "",
         password: "",
         phone: "",
+        nickName: "",
         name: "",
         emailError: "",
         passwordError: "",
         phoneError: "",
-        nameError: ",",
+        nameError: "",
+        nickNameError: "",
         isValidEmail: false,
         isValidPassword: false,
         isValidPhone: false,
         isValidName: false,
-        passwordType: "password"
+        isValidNickName: false,
+        passwordType: "password",
+        serverError: ""
     }
 
     onEmailChange = (ev) => {
@@ -34,7 +42,7 @@ class Register extends React.Component {
         const password = ev.target.value;
         let passwordError = "";
         const isValidPassword = password !== "" ? true : false;
-        if(!isValidPassword) {
+        if (!isValidPassword) {
             passwordError = "Password required."
         }
         this.setState({ password, isValidPassword, passwordError });
@@ -54,22 +62,62 @@ class Register extends React.Component {
         const name = ev.target.value;
         let nameError = "";
         const isValidName = name !== "" ? true : false;
-        if(!isValidName) {
+        if (!isValidName) {
             nameError = "Name required."
         }
         this.setState({ name, isValidName, nameError });
     }
 
+    onNickNameChange = (ev) => {
+        const nickName = ev.target.value;
+        let nickNameError = "";
+        const isValidNickName = nickName !== "" ? true : false;
+        if (!isValidNickName) {
+            nickNameError = "Nick Name required."
+        }
+        this.setState({ nickName, isValidNickName, nickNameError });
+    }
+
 
     onSubmit = () => {
-        if(this.state.isValidPassword && this.state.isValidEmail && this.state.isValidName && this.state.isValidPhone) {
-            console.log("submitted.")
+        let _this = this;
+        if (this.state.isValidPassword && this.state.isValidEmail && this.state.isValidName && this.state.isValidNickName && this.state.isValidPhone) {
+            axios.post(API_URL + "reg/v1/api", {
+                "query": {
+                    "Name": this.state.name,
+                    "E_mail": this.state.email,
+                    "Phone": this.state.phone,
+                    "Nickname": this.state.nickName,
+                    "Pswd": this.state.password
+                }
+            }, {
+                headers: API_HEADERS
+            })
+                .then((response) => {
+                    if (response.data.status) {
+                        localforage.setItem('isLoggedin', true, function (err) {
+                            localforage.setItem('user', response.data.data, function (err) {
+                                _this.props.history.push("/");
+                            });
+                        });
+                    } else {
+                        this.setState({
+                            serverError: response.data.message
+                        })
+                    }
+                })
+                .catch((error) => {
+                    this.setState({
+                        serverError: error.message
+                    })
+                })
         } else {
             this.setState({
                 emailError: "Invalid email.",
                 passwordError: "Password required.",
                 phoneError: "Invalid phone number.",
-                nameError: "Name required."
+                nameError: "Name required.",
+                nickNameError: "Nick Name required.",
             })
         }
     }
@@ -77,39 +125,56 @@ class Register extends React.Component {
 
     render() {
         return (
-            <div>
-                <div>left section</div>
-                <div>
-                    <Logo />
-                    <span>Register</span>
-                    <div>
-                        <label>Name</label>
-                        <input type="text" name="name" onChange={(ev) => { this.onNameChange(ev) }} value={this.state.name} />
-                        <span className="error">{this.state.nameError}</span>
+            <section className="">
+                <div className="row margin0 fullheight">
+                    <div className="col-12  col-lg-8 register-bg"></div>
+                    <div className="col-12  col-lg-4 login-sec">
+                        <div className="login_logo text-center"><Logo /></div>
+                        <h2 className="sign_in_text">Register</h2>
+                        <form className="register-form">
+                            <div class="text-center text-danger error_msg"><span className="server-error">{this.state.serverError}</span></div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="form-label">Name</label>
+                                <input type="text" className="form-control" name="name" onChange={(ev) => { this.onNameChange(ev) }} value={this.state.name} />
+                                <span className="error">{this.state.nameError}</span>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="nickname" className="form-label">Nick Name</label>
+                                <input type="text" className="form-control" name="nickname" onChange={(ev) => { this.onNickNameChange(ev) }} value={this.state.nickName} />
+                                <span className="error">{this.state.nickNameError}</span>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="email" className="form-label">Email Address</label>
+                                <input className="form-control" type="email" name="email" onChange={(ev) => { this.onEmailChange(ev) }} value={this.state.email} />
+                                <span className="error">{this.state.emailError}</span>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="phone" className="form-label">Phone Number</label>
+                                <input className="form-control" type="text" name="phone" maxLength={10} onChange={(ev) => { this.onPhoneChange(ev) }} value={this.state.phone} />
+                                <span className="error">{this.state.phoneError}</span>
+                            </div>
+                            <div className="form-group input-group">
+                                <label htmlFor="password" className="form-label">Password</label>
+                                <input className="form-control  password-input" type={this.state.passwordType} name="password" onChange={(ev) => { this.onPasswordChange(ev) }} value={this.state.password} />
+                                <div className="input-group-append">
+                                    <span className="input-group-text  password-eye" onMouseEnter={() => { this.setState({ passwordType: "text" }) }} onMouseLeave={() => { this.setState({ passwordType: "password" }) }}><img className="password-eye-image" src={eyeImage} alt="view-password" /></span>
+                                </div>
+                            </div>
+                            <span className="error  password-error-span">{this.state.passwordError}</span>
+                            <div className="btn_div">
+                                <button onClick={this.onSubmit} type="button" className="btn btn-login float-right register_button">Register</button>
+                            </div>
+                            <div className="Already-have-an-account-Sign-in">
+                                Already have an account?  <Link to="login">Sign in</Link>
+                            </div>
+                            <div className="copyright">Copyright 2020 iTalentHub</div>
+                        </form>
+
                     </div>
-                    <div>
-                        <label>Email</label>
-                        <input type="email" name="email" onChange={(ev) => { this.onEmailChange(ev) }} value={this.state.email} />
-                        <span className="error">{this.state.emailError}</span>
-                    </div>
-                    <div>
-                        <label>Phone</label>
-                        <input type="text" name="phone" maxLength={10} onChange={(ev) => { this.onPhoneChange(ev) }} value={this.state.phone} />
-                        <span className="error">{this.state.phoneError}</span>
-                    </div>
-                    <div>
-                        <label>Password</label>
-                        <input type={this.state.passwordType} name="password" onChange={(ev) => { this.onPasswordChange(ev) }} value={this.state.password} />
-                        <span onMouseEnter={() => {this.setState({passwordType: "text"})}} onMouseLeave={() => {this.setState({passwordType: "password"})}}>View password</span>
-                        <span className="error">{this.state.passwordError}</span>
-                    </div>
-                    <button onClick={this.onSubmit}>Register</button>
-                    <p>Already have an account? <Link to="login">Sign in</Link></p>
-                    <p>Copyright 2020 iTalentHub</p>
                 </div>
-            </div>
+            </section>
         )
     }
 }
 
-export default Register;
+export default withRouter(Register);

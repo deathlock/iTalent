@@ -2,10 +2,12 @@ import React from 'react';
 
 function CategoryCard(props) {
     return (
-        <div>
-            <span>{props.data.icon}</span>
-            <h2><b>{props.data.name}</b></h2>
-            <p>{props.data.description}</p>
+        <div className="col-12 col-xl-4 col-lg-4 col-md-4">
+            <div className="box">
+              <div className="icons"><img alt={props.data.name} src={props.data.icon} className="img-fluid" /></div>
+              <p className="text">{props.data.name}</p>
+              <div className="sub-title">{props.data.description}</div>
+            </div>          
         </div>
     )
 }

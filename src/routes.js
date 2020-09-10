@@ -11,6 +11,11 @@ import Categories from './components/pages/categories';
 import Testimonials from './components/pages/testimonials';
 import Login from './components/pages/login';
 import Register from './components/pages/register';
+import FindTalent from './components/pages/findTalent';
+import Talent from './components/pages/talent';
+import UpdateProfile from './components/pages/updateProfile';
+import LoginAuth from './components/layout/loginAuth';
+import LogoutAuth from './components/layout/logoutAuth';
 
 export default () => {
   return (
@@ -34,12 +39,35 @@ export default () => {
         </Layout>
       </Route>
 
+
+      <Route path="/talent">
+        <Layout>
+          <Talent />
+        </Layout>
+      </Route>
+
+      <Route path="/update-profile">
+        <LoginAuth>
+          <Layout hasNavigator={false}>
+            <UpdateProfile />
+          </Layout>
+        </LoginAuth>
+      </Route>
+
       <Route path="/login">
+        <LogoutAuth>
           <Login />
+        </LogoutAuth>
       </Route>
 
       <Route path="/register">
+        <LogoutAuth>
           <Register />
+        </LogoutAuth>
+      </Route>
+
+      <Route path="/find-talent">
+        <FindTalent />
       </Route>
 
     </Switch>

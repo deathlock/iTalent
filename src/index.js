@@ -2,12 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
-import './index.css';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 
+
 import configureStore from '../src/redux/store';
 import createRoutes from './routes';
+
+// css
+import '../src/assets/css/main.css';
 
 const initialState = {}
 const store = configureStore(initialState);
