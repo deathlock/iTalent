@@ -52,7 +52,9 @@ class Login extends React.Component {
                     if (response.data.status) {
                         localforage.setItem('isLoggedin', true, function (err) {
                             localforage.setItem('user', response.data.data, function (err) {
+                                localforage.setItem('completePercentage', response.data.completePercentage, function (err) {
                                 _this.props.history.push("/");
+                                });
                             });
                         });
                     } else {
@@ -86,7 +88,7 @@ class Login extends React.Component {
                         <h2 className="sign_in_text">Sign in</h2>
 
                         <form className="login-form">
-                            <div class="text-center text-danger error_msg"><span className="server-error">{this.state.serverError}</span></div>
+                            <div className="text-center text-danger error_msg"><span className="server-error">{this.state.serverError}</span></div>
                             <div className="form-group">
                                 <label htmlFor="email" className="form-label">Email Address</label>
                                 <input type="email" className="form-control" name="email" onChange={(ev) => { this.onEmailChange(ev) }} value={this.state.email} />
@@ -102,7 +104,7 @@ class Login extends React.Component {
                             </div>
                             <span className="error  password-error-span">{this.state.passwordError}</span>
                                 
-                            <div className="Forgot-password"><Link to="/forgot-password">Forgot Password ?</Link></div>
+                            {/* <div className="Forgot-password"><Link to="/forgot-password">Forgot Password ?</Link></div> */}
                             <div className="btn_div">
                                 <button type="button" onClick={this.onSubmit} className="btn btn-login float-right register_button">Sign in</button>
                             </div>

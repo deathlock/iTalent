@@ -1,6 +1,7 @@
 {
   "name": "italenthub",
   "version": "0.1.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -15,13 +16,16 @@
     "react": "^16.13.1",
     "react-bar-chart": "^0.1.2",
     "react-dom": "^16.13.1",
+    "react-percent-bar": "0.0.2",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-router-redux": "^4.0.8",
     "react-scripts": "3.4.3",
+    "react-skillbars": "^1.6.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "simple-react-modal": "^0.5.1"
   },
   "scripts": {
     "start": "react-scripts start",

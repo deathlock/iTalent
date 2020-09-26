@@ -41,7 +41,7 @@ class Layout extends React.Component {
     render() {
         return (
             <React.Fragment>
-            <div className={`container-fluid ${this.state.activeLink !== 1 && this.state.activeLink !== -1 && this.state.activeLink !== 3 ? "header-background-color": ''}`} style={{ position: 'relative' }}>
+            <div className={`container-fluid ${(this.state.activeLink !== 1 && this.state.activeLink !== -1 && this.state.activeLink !== 3) || this.props.location.pathname === "/team" ? "header-background-color": ''}`} style={{ position: 'relative' }}>
                 <div className="container">
                     <Header />
                     <section className="section-1">
@@ -50,7 +50,7 @@ class Layout extends React.Component {
                     </section>
                 </div>
             </div>
-            <Footer hasBackground={this.state.activeLink === 1 || this.state.activeLink === 3  || this.state.activeLink === -1 ? false : true} />
+            <Footer hasBackground={(this.state.activeLink === 1 || this.state.activeLink === 3  || this.state.activeLink === -1) && this.props.location.pathname !== "/team" ? false : true} />
             </React.Fragment>
         );
     }

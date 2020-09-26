@@ -16,6 +16,7 @@ import Talent from './components/pages/talent';
 import UpdateProfile from './components/pages/updateProfile';
 import LoginAuth from './components/layout/loginAuth';
 import LogoutAuth from './components/layout/logoutAuth';
+import Team from './components/pages/team';
 
 export default () => {
   return (
@@ -43,6 +44,12 @@ export default () => {
       <Route path="/talent">
         <Layout>
           <Talent />
+        </Layout>
+      </Route>
+      
+      <Route path="/team">
+        <Layout hasNavigator={false}>
+          <Team />
         </Layout>
       </Route>
 

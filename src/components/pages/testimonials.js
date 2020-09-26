@@ -106,9 +106,7 @@ class Testimonials extends React.Component {
                     <div className="col-12 col-md-6 testimonial-image-container">
                         <img src={this.state.data.image} alt="testimonial" className="img-fluid testimonial-image" />
                     </div>
-                </div>
-                <div className="row">
-                    <ul className="list-inline verticle-slider text-center">
+                    <ul className="list-inline verticle-slider text-center m-auto">
                         <li className="list-inline-item" onClick={this.leftArrowFn}><a><img src={this.state.active > 0 ? LeftArrowHighlight : LeftArrow} alt="left-arrow" className="img-fluid slider_img" /></a></li>
                         {
                             tData.map((e, key) => {
@@ -117,6 +115,10 @@ class Testimonials extends React.Component {
                         }
                         <li className="list-inline-item" onClick={this.rightArrowFn}><a><img src={this.state.active < tData.length - 1 ? RightArrowHighlight : RightArrow} alt="right-arrow" className="img-fluid slider_img" /></a></li>
                     </ul>
+                </div>
+
+                <div className="row">
+                   
                 </div>
             </React.Fragment>
         );

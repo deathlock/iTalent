@@ -6,6 +6,7 @@ import { API_URL, API_HEADERS } from '../../utils/api';
 import axios from 'axios';
 import localforage from 'localforage';
 import eyeImage from '../../assets/images/eye.png';
+import PDF from '../../assets/iTalentHub-Disclaimer.pdf';
 
 class Register extends React.Component {
     state = {
@@ -14,11 +15,13 @@ class Register extends React.Component {
         phone: "",
         nickName: "",
         name: "",
+        terms: false,
         emailError: "",
         passwordError: "",
         phoneError: "",
         nameError: "",
         nickNameError: "",
+        termsError: false,
         isValidEmail: false,
         isValidPassword: false,
         isValidPhone: false,
@@ -28,8 +31,8 @@ class Register extends React.Component {
         serverError: ""
     }
 
-    onEmailChange = (ev) => {
-        const email = ev.target.value;
+    onEmailChange = (ev, isDirect = false) => {
+        const email = isDirect ? this.state.email : ev.target.value;
         const isValidEmail = validateEmail(email);
         let emailError = "";
         if (!isValidEmail) {
@@ -38,8 +41,8 @@ class Register extends React.Component {
         this.setState({ email, emailError, isValidEmail });
     }
 
-    onPasswordChange = (ev) => {
-        const password = ev.target.value;
+    onPasswordChange = (ev, isDirect = false) => {
+        const password = isDirect ? this.state.password : ev.target.value;
         let passwordError = "";
         const isValidPassword = password !== "" ? true : false;
         if (!isValidPassword) {
@@ -48,8 +51,8 @@ class Register extends React.Component {
         this.setState({ password, isValidPassword, passwordError });
     }
 
-    onPhoneChange = (ev) => {
-        const phone = ev.target.value;
+    onPhoneChange = (ev, isDirect = false) => {
+        const phone = isDirect ? this.state.phone : ev.target.value;
         const isValidPhone = validatePhone(phone);
         let phoneError = "";
         if (!isValidPhone) {
@@ -58,8 +61,8 @@ class Register extends React.Component {
         this.setState({ phone, phoneError, isValidPhone });
     }
 
-    onNameChange = (ev) => {
-        const name = ev.target.value;
+    onNameChange = (ev, isDirect = false) => {
+        const name = isDirect ? this.state.name : ev.target.value;
         let nameError = "";
         const isValidName = name !== "" ? true : false;
         if (!isValidName) {
@@ -68,8 +71,8 @@ class Register extends React.Component {
         this.setState({ name, isValidName, nameError });
     }
 
-    onNickNameChange = (ev) => {
-        const nickName = ev.target.value;
+    onNickNameChange = (ev, isDirect = false) => {
+        const nickName = isDirect ? this.state.nickName : ev.target.value;
         let nickNameError = "";
         const isValidNickName = nickName !== "" ? true : false;
         if (!isValidNickName) {
@@ -78,17 +81,25 @@ class Register extends React.Component {
         this.setState({ nickName, isValidNickName, nickNameError });
     }
 
+    onTermsCheck = (ev, isDirect = false) => {
+        const val = isDirect ? this.state.terms : ev.target.checked;
+        this.setState({
+            terms: val,
+            termsError: !val ? "Please accept terms and conditions." : ""
+        })
+    }
 
     onSubmit = () => {
         let _this = this;
-        if (this.state.isValidPassword && this.state.isValidEmail && this.state.isValidName && this.state.isValidNickName && this.state.isValidPhone) {
+        if (this.state.terms && this.state.isValidPassword && this.state.isValidEmail && this.state.isValidName && this.state.isValidNickName && this.state.isValidPhone) {
             axios.post(API_URL + "reg/v1/api", {
                 "query": {
                     "Name": this.state.name,
                     "E_mail": this.state.email,
                     "Phone": this.state.phone,
                     "Nickname": this.state.nickName,
-                    "Pswd": this.state.password
+                    "Pswd": this.state.password,
+                    "terms": this.state.terms
                 }
             }, {
                 headers: API_HEADERS
@@ -97,12 +108,14 @@ class Register extends React.Component {
                     if (response.data.status) {
                         localforage.setItem('isLoggedin', true, function (err) {
                             localforage.setItem('user', response.data.data, function (err) {
+                                localforage.setItem('completePercentage', response.data.completePercentage, function (err) {
                                 _this.props.history.push("/");
+                                })
                             });
                         });
                     } else {
                         this.setState({
-                            serverError: response.data.message
+                            serverError: response.data.data
                         })
                     }
                 })
@@ -112,13 +125,12 @@ class Register extends React.Component {
                     })
                 })
         } else {
-            this.setState({
-                emailError: "Invalid email.",
-                passwordError: "Password required.",
-                phoneError: "Invalid phone number.",
-                nameError: "Name required.",
-                nickNameError: "Nick Name required.",
-            })
+            this.onEmailChange({}, true);
+            this.onNameChange({}, true);
+            this.onNickNameChange({}, true);
+            this.onPhoneChange({}, true);
+            this.onTermsCheck({}, true);
+            this.onPasswordChange({}, true);
         }
     }
 
@@ -132,7 +144,7 @@ class Register extends React.Component {
                         <div className="login_logo text-center"><Logo /></div>
                         <h2 className="sign_in_text">Register</h2>
                         <form className="register-form">
-                            <div class="text-center text-danger error_msg"><span className="server-error">{this.state.serverError}</span></div>
+                            <div className="text-center text-danger error_msg"><span className="server-error">{this.state.serverError}</span></div>
                             <div className="form-group">
                                 <label htmlFor="name" className="form-label">Name</label>
                                 <input type="text" className="form-control" name="name" onChange={(ev) => { this.onNameChange(ev) }} value={this.state.name} />
@@ -161,6 +173,11 @@ class Register extends React.Component {
                                 </div>
                             </div>
                             <span className="error  password-error-span">{this.state.passwordError}</span>
+                            <div className="form-group">
+                                <input type="checkbox" style={{display: "inline"}} name="terms" onChange={(ev) => { this.onTermsCheck(ev) }} checked={this.state.terms} />
+                                <span style={{display: "inline", marginLeft: "10px"}} htmlFor="terms" className="form-label">I accept <a href={PDF} target="_blank" >terms & Conditions.</a></span>
+                            </div>
+                            <span className="error" style={{top: "-10px"}}>{this.state.termsError}</span>
                             <div className="btn_div">
                                 <button onClick={this.onSubmit} type="button" className="btn btn-login float-right register_button">Register</button>
                             </div>
